@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: authorization
+  cloud:
+    consul:
+      host: ${CONSUL_HOST:localhost}
+      port: ${CONSUL_PORT:8500}
+      discovery:
+        instance-id: ${spring.application.name}:${random.value}
+      config:
+        enabled: true
+        prefix: consul_kv_init_data/master
+        format: FILES

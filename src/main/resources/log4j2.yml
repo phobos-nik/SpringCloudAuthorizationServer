@@ -1,0 +1,42 @@
+configuration:
+
+  properties:
+    property:
+      - name: rolling_log_directory_name
+        value: log
+      - name: rolling_log_file_name
+        value: authorization_server.log
+      - name: log_pattern
+        value: "%d{yyyy-MM-dd HH:mm:ss.SSS} %5p ${hostName} --- [%15.15t] %-40.40c{1.} : %m%n%ex"
+
+  appenders:
+    console:
+      name: consoleAppender
+      target: SYSTEM_OUT
+      follow: true
+      patternLayout:
+        pattern: ${log_pattern}
+    rollingFile:
+      name: fileAppender
+      fileName: "${rolling_log_directory_name}/${rolling_log_file_name}"
+      filePattern: "${rolling_log_directory_name}/archive/log_%d{yyyy-MM-dd-hh-mm}.zip"
+      patternLayout:
+        pattern: ${log_pattern}
+      policies:
+        sizeBasedTriggeringPolicy:
+          size: 512 MB
+      defaultRollOverStrategy:
+        max: 99
+
+  loggers:
+    root:
+      level: info
+      appenderRef:
+        ref: consoleAppender
+    logger:
+      name: edu.practice.authorizationServer
+      level: error
+      additivity: false
+      appenderRef:
+        - ref: consoleAppender
+        - ref: fileAppender
