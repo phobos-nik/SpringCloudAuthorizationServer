@@ -1,0 +1,3 @@
+userDetailsServiceImpl:
+  usernameNotFoundException:
+    message: User {0} not found.

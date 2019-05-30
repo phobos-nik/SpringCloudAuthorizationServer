@@ -12,7 +12,7 @@ import java.util.UUID;
 @Table(name = "users")
 @JsonDeserialize(builder = ApplicationUser.ApplicationUserBuilder.class)
 @Builder(builderClassName = "ApplicationUserBuilder", toBuilder = true)
-@EqualsAndHashCode(exclude = {"uuid", "password"})
+@EqualsAndHashCode(of = {"username", "role", "enabled"})
 @ToString(exclude = {"password"})
 public class ApplicationUser {
 

@@ -1,6 +1,8 @@
 spring:
   application:
     name: authorization
+  messages:
+    basename: messages
   cloud:
     consul:
       host: ${CONSUL_HOST:localhost}
