@@ -19,7 +19,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 @AutoConfigureMockMvc
 @SpringBootTest(classes = {AuthorizationServerApplication.class})
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class AuthenticationLifecycleTests {
 
     @Autowired
@@ -27,14 +26,12 @@ class AuthenticationLifecycleTests {
 
     @Value("${AUTHORIZATION_CLIENT_ID}")
     private String authorizationClientId;
-    //private static final String authorizationClientId = "default_authorization_client_id";
 
     @Value("${AUTHORIZATION_CLIENT_SECRET}")
     private String authorizationClientSecret;
-    //private static final String authorizationClientSecret = "authorization_client_secret";
 
     @BeforeAll
-    public static void beforeAll() {
+    static void beforeAll() {
         System.setProperty("AUTHORIZATION_CLIENT_ID", "test_authorization_client_id");
         System.setProperty("AUTHORIZATION_CLIENT_SECRET", "test_authorization_client_secret");
     }
