@@ -39,6 +39,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                         .antMatchers("/actuator/**").permitAll()
                         .antMatchers(HttpMethod.POST, "/oauth/token").permitAll()
+                        .antMatchers(HttpMethod.GET, "/oauth/token_key").permitAll()
                         .anyRequest().authenticated();
     }
 
