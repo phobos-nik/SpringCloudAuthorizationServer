@@ -10,6 +10,7 @@ import org.springframework.security.oauth2.config.annotation.configurers.ClientD
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
+import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
@@ -41,6 +42,12 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
                                             PasswordEncoder passwordEncoder) {
         this.authenticationManager = authenticationManager;
         this.passwordEncoder = passwordEncoder;
+    }
+
+    @Override
+    public void configure(AuthorizationServerSecurityConfigurer authorizationServerSecurityConfigurer) throws Exception {
+        authorizationServerSecurityConfigurer.tokenKeyAccess("permitAll()");
+        authorizationServerSecurityConfigurer.checkTokenAccess("permitAll()");
     }
 
     @Override

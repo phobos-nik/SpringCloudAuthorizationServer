@@ -1,6 +1,6 @@
 # SpringCloudAuthorizationServer
 
-Using environment variables:
+Using system environment variables:
 - CONSUL_HOST
 - CONSUL_PORT
 - MYSQL_HOST

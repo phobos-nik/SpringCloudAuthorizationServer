@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -45,6 +46,19 @@ class AuthenticationLifecycleTests {
     }
 
     @Test
+    void publicKeyResponds() throws Exception {
+        final MvcResult mvcResult = mockMvc.perform(
+                get("/oauth/token_key")
+                .with(httpBasic(authorizationClientId, authorizationClientSecret))
+                .accept(MediaType.APPLICATION_JSON_UTF8))
+            .andExpect(status().isOk())
+            .andReturn();
+        final String response = mvcResult.getResponse().getContentAsString();
+        assertNotNull(response);
+        assertNotEquals("", response);
+    }
+
+    @Test
     void getUserToken() throws Exception {
         final MultiValueMap<String, String> parameters;
         parameters = new LinkedMultiValueMap<>();
@@ -54,7 +68,10 @@ class AuthenticationLifecycleTests {
         parameters.add("username", "User");
         parameters.add("password", "user_password");
         
-        assertNotNull(getAccessToken(parameters));
+        final String accessToken = getAccessToken(parameters);
+        assertNotNull(accessToken);
+
+        checkAccessToken(accessToken);
     }
 
     @Test
@@ -67,11 +84,14 @@ class AuthenticationLifecycleTests {
         parameters.add("username", "Administrator");
         parameters.add("password", "administrator_password");
 
-        assertNotNull(getAccessToken(parameters));
+        final String accessToken = getAccessToken(parameters);
+        assertNotNull(accessToken);
+
+        checkAccessToken(accessToken);
     }
 
     private String getAccessToken(MultiValueMap<String, String> parameters) throws Exception {
-        MvcResult mvcResult = mockMvc.perform(
+        final MvcResult mvcResult = mockMvc.perform(
                         post("/oauth/token")
                         .params(parameters)
                         .with(httpBasic(authorizationClientId, authorizationClientSecret))
@@ -80,7 +100,20 @@ class AuthenticationLifecycleTests {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andReturn();
 
-        final String response = mvcResult.getResponse().getContentAsString();
-        return objectMapper.readValue(response, JsonNode.class).asText();
+        return mvcResult.getResponse().getContentAsString();
+    }
+
+    private void checkAccessToken(String fullAccessToken) throws Exception {
+        final JsonNode fullAccessTokenJson = objectMapper.readValue(fullAccessToken, JsonNode.class);
+        final String accessToken = fullAccessTokenJson.get("access_token").asText();
+        final MvcResult mvcResult = mockMvc.perform(
+                    post("/oauth/check_token")
+                    .param("token", accessToken)
+                    .with(httpBasic(authorizationClientId, authorizationClientSecret))
+                    .accept(MediaType.APPLICATION_JSON_UTF8))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+            .andReturn();
+        System.out.println(mvcResult.getResponse().getContentAsString());
     }
 }
