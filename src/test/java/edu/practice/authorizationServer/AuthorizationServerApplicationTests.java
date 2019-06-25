@@ -44,5 +44,4 @@ class AuthorizationServerApplicationTests {
                 ObjectNode.class)
             .get("status").asText());
     }
-
 }
