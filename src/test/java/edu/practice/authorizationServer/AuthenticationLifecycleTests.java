@@ -106,14 +106,12 @@ class AuthenticationLifecycleTests {
     private void checkAccessToken(String fullAccessToken) throws Exception {
         final JsonNode fullAccessTokenJson = objectMapper.readValue(fullAccessToken, JsonNode.class);
         final String accessToken = fullAccessTokenJson.get("access_token").asText();
-        final MvcResult mvcResult = mockMvc.perform(
+        mockMvc.perform(
                     post("/oauth/check_token")
                     .param("token", accessToken)
                     .with(httpBasic(authorizationClientId, authorizationClientSecret))
                     .accept(MediaType.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
-            .andReturn();
-        System.out.println(mvcResult.getResponse().getContentAsString());
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));        
     }
 }
